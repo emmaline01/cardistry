@@ -1,20 +1,44 @@
-from flask import Flask
+from flask import Flask, jsonify, request, json
 import pyodbc
 import atexit
 
 app = Flask(__name__)
 
-class Moves(cursor):
-    id = 
-
+# get the current list of moves and return them as JSON
 @app.route('/api', methods=['GET'])
 def index():
-    return {
-        'name': 'Hello!!'
-    }
+    cursor.execute("SELECT * FROM Moves")
+
+    dbRow = cursor.fetchone()
+    databaseData = []
+    while dbRow is not None:
+        currMove = dict()
+        currMove["id"] = str(dbRow[0])
+        currMove["date"] = str(dbRow[1])
+        currMove["name"] = str(dbRow[2])
+        databaseData += [currMove]
+        dbRow = cursor.fetchone()
+    # you can jsonify a list or a dict
+    return jsonify(databaseData)
+
+# insert a new move into the database
+@app.route('/api/create', methods=['POST'])
+def create():
+    requestData = request.get_json() #gets body of request as dict
+    date = '7/31/2021'
+    name = requestData['content']
+    difficulty = 2
+    cursor.execute(f"INSERT INTO Moves (learn_date, move_name, move_difficulty) VALUES ('{date}', '{name}', {difficulty})")
+
+    conn.commit()
+
+    return {'201': 'Move added successfully'}
+
 
 @app.route('/')
 def hello():
+    cursor.execute("SELECT * FROM Moves")
+
     row = cursor.fetchone()
     if row is not None:
         return"<h1>" + str(row[0]) + " " + str(row[1]) + " " + str(row[2]) +"</h1>"
@@ -32,7 +56,6 @@ if __name__ == '__main__':
 
     conn = pyodbc.connect('DRIVER='+driver+';SERVER='+server+';PORT=1433;DATABASE='+database+';UID='+username+';PWD='+ password)
     cursor = conn.cursor()
-    cursor.execute("SELECT * FROM Moves")
 
     #start app
     app.run(debug=True)

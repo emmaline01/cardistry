@@ -1,5 +1,17 @@
 import React from 'react';
 
-export const Card = ()=> {
-    return <div>Hello world</div>
+// displays a single move
+
+export const Card = ({listOfMoves})=> {
+    return (
+        <>
+            {listOfMoves.map(move => {
+                return (
+                    <ul key={move.id}>
+                        <li>{move.name}</li>
+                    </ul>
+                )
+            })}
+        </>
+    )
 }
