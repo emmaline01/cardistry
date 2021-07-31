@@ -4,6 +4,15 @@ import atexit
 
 app = Flask(__name__)
 
+class Moves(cursor):
+    id = 
+
+@app.route('/api', methods=['GET'])
+def index():
+    return {
+        'name': 'Hello!!'
+    }
+
 @app.route('/')
 def hello():
     row = cursor.fetchone()
