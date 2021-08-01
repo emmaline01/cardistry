@@ -15,12 +15,18 @@ export const Form = ({inputMove, onFormChange, onFormSubmit})=> {
     //col-md-# doesn't work for text input??? but col does?
     return (
         <>
-            <div class="container">
+            <div className="container">
                 <form onSubmit={handleSubmit}>
-                    <div class="row">
-                        <input type='text' placeholder="Move name" required value={inputMove} onChange={handleNameChange} class="form-control col"></input>
-                        <input type='text' class="form-control col"></input>
-                        <button type="submit" class="btn btn-secondary col-md-1">Submit</button>
+                    <div className="row" style={{padding:"50px 0px 50px 0px"}}>
+                        <div className="col-sm-4">
+                            <input type='text' placeholder="Move name" required value={inputMove} onChange={handleNameChange} className="form-control"></input>
+                        </div>
+                        <div className="col">
+                            <input type='text' className="form-control"></input>
+                        </div>
+                        <div className="col-sm-1">
+                            <button type="submit" className="btn btn-secondary">Submit</button>
+                        </div>
                     </div>
                 </form>
             </div>

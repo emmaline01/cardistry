@@ -7,7 +7,7 @@ app = Flask(__name__)
 # get the current list of moves and return them as JSON
 @app.route('/api', methods=['GET'])
 def index():
-    cursor.execute("SELECT * FROM Moves")
+    cursor.execute("SELECT * FROM Moves ORDER BY id DESC")
 
     dbRow = cursor.fetchone()
     databaseData = []

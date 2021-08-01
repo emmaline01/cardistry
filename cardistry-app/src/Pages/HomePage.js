@@ -1,8 +1,9 @@
 // lots of credit to the tutorial https://www.youtube.com/watch?v=cb1vy1HpVwk
 
 import React, {useState, useEffect} from 'react';
-import {Card} from '../Components/Card/card';
+import {Table} from '../Components/Table/table';
 import {Form} from '../Components/Form/form';
+import {TitleBar} from '../Components/TitleBar/titleBar'
 
 // the home page of the web app
 export const HomePage = ()=> {
@@ -60,8 +61,9 @@ export const HomePage = ()=> {
 
     return (
         <>
+            <TitleBar/>
             <Form inputMove={addedMove} onFormChange={handleFormChange} onFormSubmit={handleFormSubmit}/>
-            <Card listOfMoves={currMoves}/>
+            <Table listOfMoves={currMoves}/>
         </>
     )
 }
