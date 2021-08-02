@@ -10,7 +10,16 @@ export const HomePage = ()=> {
 
     // state info: current list of moves, move being added
     const [currMoves, setMoves] = useState([])
-    const [addedMove, setAddMove] = useState('')
+    const [addedMove, setAddMove] = useState(['', '', 'Difficulty', 'Type', '', ''])
+
+    const fieldNums = {
+        "date": 0,
+        "name": 1,
+        "difficulty": 2,
+        "type": 3,
+        "link": 4,
+        "notes": 5
+    }
 
     // sets the current list of moves when this page renders
     useEffect(()=> {
@@ -25,8 +34,11 @@ export const HomePage = ()=> {
     }, [])
 
     // updates the currently added move state
-    const handleFormChange = (inputVal) => {
-        setAddMove(inputVal)
+    const handleFormChange = (field, inputVal) => {
+        let newAddedMove = addedMove.slice(0, field)
+        newAddedMove.push(inputVal)
+        newAddedMove = newAddedMove.concat(addedMove.slice(field+1))
+        setAddMove(newAddedMove)
     }
 
     // sends an inputted move to the database, updates current states
@@ -34,7 +46,12 @@ export const HomePage = ()=> {
         fetch('/api/create', {
             method: 'POST',
             body: JSON.stringify({
-                content:addedMove
+                date:addedMove[fieldNums["date"]],
+                name:addedMove[fieldNums["name"]],
+                difficulty:addedMove[fieldNums["difficulty"]],
+                type:addedMove[fieldNums["type"]],
+                link:addedMove[fieldNums["link"]],
+                notes:addedMove[fieldNums["notes"]],
             }),
             headers: {
                 "Content-type": "application/json; charset=UTF-8"
@@ -42,7 +59,7 @@ export const HomePage = ()=> {
         }).then(response => response.json())
         .then(msg => {
             console.log(msg)
-            setAddMove('')
+            setAddMove(['', '', 'Difficulty', 'Type', '', ''])
             updateMoves()
         })
     }
@@ -62,7 +79,7 @@ export const HomePage = ()=> {
     return (
         <>
             <TitleBar/>
-            <Form inputMove={addedMove} onFormChange={handleFormChange} onFormSubmit={handleFormSubmit}/>
+            <Form inputMove={addedMove} onFormChange={handleFormChange} onFormSubmit={handleFormSubmit} fieldNums={fieldNums}/>
             <Table listOfMoves={currMoves}/>
         </>
     )
