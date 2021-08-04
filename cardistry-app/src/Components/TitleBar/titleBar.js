@@ -5,7 +5,7 @@ export const TitleBar = ()=> {
     return (
         <>
             <nav className="navbar navbar-default">
-                <h1 className="navbar-brand navbar-header" style={{fontSize: "xx-large"}}>Cardistry Move Tracker</h1>
+                <h1 className="navbar-brand navbar-header" style={{fontSize: "xx-large"}}>Cardistry Dashboard</h1>
             </nav>
         </>
     )
