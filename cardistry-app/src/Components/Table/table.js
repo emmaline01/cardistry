@@ -1,15 +1,20 @@
 import React from 'react';
 
-// displays a single move
+const handleClick = (id) => {
+    console.log("clicked!")
+    // TODO: show a modal popup that allows editing of row and save the edits to db
+}
+
+// displays a table of moves
 
 export const Table = ({listOfMoves})=> {
     return (
         <>
             <div className="container">
                 <div className="row">
-                    <table className="table table-striped table-bordered">
+                    <table className="table table-bordered table-striped table-hover">
                         <thead style={{backgroundColor:"#6c757d", color:"white"}}>
-                            <tr key={-1}>
+                            <tr>
                                 <th scope="col">Date</th>
                                 <th scope="col">Name</th>
                                 <th scope="col">Difficulty</th>
@@ -21,7 +26,7 @@ export const Table = ({listOfMoves})=> {
                         <tbody>
                             {listOfMoves.map(move => {
                                 return (
-                                    <tr key={move.id}>
+                                    <tr key={move.id} onClick={(e)=> handleClick(move.id)}>
                                         <td>{move.date}</td>
                                         <td>{move.name}</td>
                                         <td>{move.difficulty}</td>

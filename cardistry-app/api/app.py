@@ -12,18 +12,20 @@ def getDbRowDict(dbRow):
         return str(entry)
 
     currMove = dict()
-    currMove["date"] = getDbEntry(dbRow[0])
-    currMove["name"] = getDbEntry(dbRow[1])
-    currMove["difficulty"] = getDbEntry(dbRow[2])
-    currMove["moveType"] = getDbEntry(dbRow[3])
-    currMove["link"] = getDbEntry(dbRow[4])
+    print(dbRow, '\n\n')
+    currMove["id"] = getDbEntry(dbRow[0])
+    currMove["date"] = getDbEntry(dbRow[1])
+    currMove["name"] = getDbEntry(dbRow[2])
+    currMove["difficulty"] = getDbEntry(dbRow[3])
+    currMove["moveType"] = getDbEntry(dbRow[4])
+    currMove["link"] = getDbEntry(dbRow[6])
     currMove["notes"] = getDbEntry(dbRow[5])
     return currMove
 
 # get the current list of moves and return them as JSON
 @app.route('/api', methods=['GET'])
 def index():
-    cursor.execute('''SELECT Moves.learn_date, Moves.move_name, Moves.move_difficulty, MoveTypes.move_type_name, Moves.link, Moves.notes 
+    cursor.execute('''SELECT Moves.id, Moves.learn_date, Moves.move_name, Moves.move_difficulty, MoveTypes.move_type_name, Moves.link, Moves.notes 
 FROM Moves LEFT JOIN MoveTypes 
 ON MoveTypes.id = Moves.move_type_id 
 ORDER BY Moves.id DESC''')
@@ -77,7 +79,7 @@ def getTransitionProbs(moveBank, currentMove, seqDifficulty):
     smoothTransitionWeight = 10
     typeVariationWeight = 0.2 # 0 to 1
 
-    startHandPos = currentMove["end position"] #TODO: add cols to Moves table
+    startHandPos = currentMove["end position"]
 
     transitionProbs = []
     for move in moveBank:
@@ -86,9 +88,10 @@ def getTransitionProbs(moveBank, currentMove, seqDifficulty):
         if move["start position"] == startHandPos:
             score += smoothTransitionWeight
         # try to have scores match difficulty target
-        score += difficultyMatchWeight * (5 - abs(move["difficulty"] - seqDifficulty))
+        if (len(move["difficulty"]) > 0):
+            score += difficultyMatchWeight * (5 - abs(int(move["difficulty"]) - seqDifficulty))
         # punish shuffles
-        if move["moveType"] == "shuffles": # TODO: whatever id that is (in a string)
+        if move["moveType"] == "6": # shuffles id
             score = 0.4 * score
         # punish moves of the same type
         if move["moveType"] == currentMove["moveType"]:
@@ -114,17 +117,22 @@ def transition(transitionProbs):
     return max(i - 1, 0)
 
 # uses a Markov chain to generate a sequence of moves
+@app.route('/api/recommendSeq', methods=['GET'])
 def recommendSeq():
     # TODO: change to parameters
     seqLength = 5
     seqDifficulty = 3
 
-    # all moves with the target difficulty have equal chance of being first
-    cursor.execute(f"SELECT * FROM Moves WHERE move_difficulty = '{seqDifficulty}'") # TODO: and move type is not magic
+    # all moves have equal chance of being first TODO: handle target difficulty
+    cursor.execute("SELECT * FROM Moves") # TODO: where move type is not magic
     dbRow = cursor.fetchone()
     moveBank = []
     while dbRow is not None:
-        moveBank += [getDbRowDict(dbRow)]
+        currMove = getDbRowDict(dbRow)
+        currMove["start position"] = dbRow[6]
+        currMove["end position"] = dbRow[7]
+        
+        moveBank += [currMove]
         dbRow = cursor.fetchone()
     startingMoveIndex = random.randint(0, len(moveBank) - 1)
     currentMove = moveBank.pop(startingMoveIndex)
@@ -136,7 +144,8 @@ def recommendSeq():
         nextMoveIndex = transition(transitionProbs)
         seq += [moveBank.pop(nextMoveIndex)]
 
-    return seq
+    print(seq)
+    return jsonify(seq)
 
 if __name__ == '__main__':
 

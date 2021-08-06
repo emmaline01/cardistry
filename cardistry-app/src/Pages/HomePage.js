@@ -61,6 +61,7 @@ export const HomePage = ()=> {
             console.log(msg)
             setAddMove(['', '', 'Difficulty', 'Type', '', ''])
             updateMoves()
+            recommendSeq()
         })
     }
 
@@ -73,6 +74,16 @@ export const HomePage = ()=> {
                 }
             })
             .then(data => setMoves(data))
+            .then(data => console.log(data))
+    }
+
+    const recommendSeq = () => {
+        fetch('/api/recommendSeq')
+            .then(response => {
+                if (response.ok) {
+                    return response.json()
+                }
+            })
             .then(data => console.log(data))
     }
 

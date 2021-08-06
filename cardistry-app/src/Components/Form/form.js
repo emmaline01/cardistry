@@ -20,7 +20,7 @@ export const Form = ({inputMove, onFormChange, onFormSubmit, fieldNums})=> {
                 <form onSubmit={handleSubmit}>
                     <div className="row" style={{padding:"50px 0px 0px 0px"}}>
                         <div className="col-sm-2">
-                            <input type='text' placeholder="Date" required value={inputMove[fieldNums["date"]]} onChange={(e) => handleChange(fieldNums["date"], e)} className="form-control"></input>
+                            <input type='date' placeholder="Date" required value={inputMove[fieldNums["date"]]} onChange={(e) => handleChange(fieldNums["date"], e)} className="form-control"></input>
                         </div>
                         <div className="col-sm-4">
                             <input type='text' placeholder="Name" required value={inputMove[fieldNums["name"]]} onChange={(e) => handleChange(fieldNums["name"], e)} className="form-control"></input>
