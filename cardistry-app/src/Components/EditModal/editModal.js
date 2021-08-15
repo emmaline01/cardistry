@@ -3,7 +3,7 @@ import Modal from 'react-bootstrap/Modal';
 import Button from 'react-bootstrap/Button'
 
 // modal that pops up when a table row is clicked. allows user to edit a move
-export const EditModal = ({editedMove, onClose, onFormChange, onFormSubmit, showModal, fieldNums}) => {
+export const EditModal = ({editedMove, onClose, onFormChange, onFormSubmit, onMoveDelete, showModal, fieldNums}) => {
 
     // referenced https://webomnizz.com/create-simple-modal-pop-up-with-react/
     const showHideClassName = showModal ? "modal d-block" : "modal d-none";
@@ -21,6 +21,11 @@ export const EditModal = ({editedMove, onClose, onFormChange, onFormSubmit, show
     const handleSubmit = (event) => {
         event.preventDefault()
         onFormSubmit()
+    }
+
+    const handleDelete = (event) => {
+        event.preventDefault()
+        onMoveDelete()
     }
 
     return (
@@ -56,11 +61,19 @@ export const EditModal = ({editedMove, onClose, onFormChange, onFormSubmit, show
                             <option>magic</option>
                         </select>
                         <input type='text' placeholder="Link" value={editedMove[fieldNums["link"]]} onChange={(e) => handleChange(fieldNums["link"], e)} className="form-control"></input>
+                        <input type='text' placeholder="Starting position" 
+                            value={editedMove[fieldNums["starting position"]]} 
+                            onChange={(e) => handleChange(fieldNums["starting position"], e)} 
+                            className="form-control"></input>
+                        <input type='text' placeholder="Ending position" 
+                            value={editedMove[fieldNums["ending position"]]} 
+                            onChange={(e) => handleChange(fieldNums["ending position"], e)} 
+                            className="form-control"></input>
                         <input type='text' placeholder="Notes" value={editedMove[fieldNums["notes"]]} onChange={(e) => handleChange(fieldNums["notes"], e)} className="form-control"></input>
                     </Modal.Body>
 
                     <Modal.Footer>
-                        <Button variant="danger">Delete move</Button>
+                        <Button variant="danger" onClick={handleDelete}>Delete move</Button>
                         <Button variant="secondary" onClick={handleClose}>Cancel</Button>
                         <Button variant="primary" onClick={handleSubmit}>Save changes</Button>
                     </Modal.Footer>

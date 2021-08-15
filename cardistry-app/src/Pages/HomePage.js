@@ -13,8 +13,8 @@ export const HomePage = ()=> {
 
     // state info
     const [currMoves, setMoves] = useState([]);
-    const [addedMove, setAddMove] = useState(['', '', 'Difficulty', 'Type', '', '']);
-    const [editedMove, setEditedMove] = useState(['', '', 'Difficulty', 'Type', '', '', -1]);
+    const [addedMove, setAddMove] = useState(['', '', 'Difficulty', 'Type', '', '', '', '']);
+    const [editedMove, setEditedMove] = useState(['', '', 'Difficulty', 'Type', '', '', '', '', -1]);
     const [showEditModal, setShowEditModal] = useState(false);
 
     const fieldNums = {
@@ -24,7 +24,9 @@ export const HomePage = ()=> {
         "type": 3,
         "link": 4,
         "notes": 5,
-        "id": 6
+        "starting position": 6,
+        "ending position": 7,
+        "id": 8
     };
 
     // sets the current list of moves when this page renders
@@ -43,6 +45,7 @@ export const HomePage = ()=> {
                 onClose={modalClose} 
                 onFormChange={modalChange} 
                 onFormSubmit={modalSubmit}
+                onMoveDelete={modalMoveDelete}
                 fieldNums={fieldNums}/>, document.getElementById('modal'));
     }, [editedMove, showEditModal])
 
@@ -50,7 +53,7 @@ export const HomePage = ()=> {
     const handleFormChange = (field, inputVal) => {
         let newAddedMove = addedMove.slice(0, field)
         newAddedMove.push(inputVal)
-        newAddedMove = newAddedMove.concat(addedMove.slice(field+1))
+        newAddedMove = newAddedMove.concat(addedMove.slice(field + 1))
         setAddMove(newAddedMove)
     }
 
@@ -65,6 +68,8 @@ export const HomePage = ()=> {
                 type:addedMove[fieldNums["type"]],
                 link:addedMove[fieldNums["link"]],
                 notes:addedMove[fieldNums["notes"]],
+                starting_position:addedMove[fieldNums["starting position"]],
+                ending_position:addedMove[fieldNums["ending position"]]
             }),
             headers: {
                 "Content-type": "application/json; charset=UTF-8"
@@ -122,7 +127,7 @@ export const HomePage = ()=> {
         if (type === "") {
             type = "Type"
         }
-        setEditedMove([move.date, move.name, diff, type, move.link, move.notes, move.id])
+        setEditedMove([move.date, move.name, diff, type, move.link, move.notes, move.starting_position, move.ending_position, move.id])
         setShowEditModal(true)
     }
 
@@ -138,6 +143,25 @@ export const HomePage = ()=> {
                 type:editedMove[fieldNums["type"]],
                 link:editedMove[fieldNums["link"]],
                 notes:editedMove[fieldNums["notes"]],
+                starting_position:editedMove[fieldNums["starting position"]],
+                ending_position:editedMove[fieldNums["ending position"]]
+            }),
+            headers: {
+                "Content-type": "application/json; charset=UTF-8"
+            }
+        }).then(response => response.json())
+        .then(msg => {
+            console.log(msg)
+            modalClose()
+            updateMoves()
+        })
+    }
+
+    const modalMoveDelete = () => {
+        fetch('/api/delete', {
+            method: 'POST',
+            body: JSON.stringify({
+                id:editedMove[fieldNums["id"]]
             }),
             headers: {
                 "Content-type": "application/json; charset=UTF-8"

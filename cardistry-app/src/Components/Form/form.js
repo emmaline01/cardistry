@@ -52,10 +52,27 @@ export const Form = ({inputMove, onFormChange, onFormSubmit, fieldNums})=> {
                             </select>
                         </div>
                     </div>
-                    <div className="row" style={{padding:"10px 0px 50px 0px"}}>
+                    <div className="row" style={{padding:"10px 0px 0px 0px"}}>
                         <div className="col-sm-4">
-                            <input type='text' placeholder="Link" value={inputMove[fieldNums["link"]]} onChange={(e) => handleChange(fieldNums["link"], e)} className="form-control"></input>
+                            <input type='text' placeholder="Link" 
+                                value={inputMove[fieldNums["link"]]} 
+                                onChange={(e) => handleChange(fieldNums["link"], e)} 
+                                className="form-control"></input>
                         </div>
+                        <div className="col-sm-4">
+                            <input type='text' placeholder="Starting position" 
+                                value={inputMove[fieldNums["starting position"]]} 
+                                onChange={(e) => handleChange(fieldNums["starting position"], e)} 
+                                className="form-control"></input>
+                        </div>
+                        <div className="col-sm-4">
+                            <input type='text' placeholder="Ending position" 
+                                value={inputMove[fieldNums["ending position"]]} 
+                                onChange={(e) => handleChange(fieldNums["ending position"], e)} 
+                                className="form-control"></input>
+                        </div>
+                    </div>
+                    <div className="row" style={{padding:"10px 0px 50px 0px"}}>
                         <div className="col">
                             <input type='text' placeholder="Notes" value={inputMove[fieldNums["notes"]]} onChange={(e) => handleChange(fieldNums["notes"], e)} className="form-control"></input>
                         </div>

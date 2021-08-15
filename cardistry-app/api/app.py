@@ -19,12 +19,14 @@ def getDbRowDict(dbRow):
     currMove["moveType"] = getDbEntry(dbRow[4])
     currMove["link"] = getDbEntry(dbRow[5])
     currMove["notes"] = getDbEntry(dbRow[6])
+    currMove["starting_position"] = getDbEntry(dbRow[7])
+    currMove["ending_position"] = getDbEntry(dbRow[8])
     return currMove
 
 # get the current list of moves and return them as JSON
 @app.route('/api', methods=['GET'])
 def index():
-    cursor.execute('''SELECT Moves.id, Moves.learn_date, Moves.move_name, Moves.move_difficulty, MoveTypes.move_type_name, Moves.link, Moves.notes 
+    cursor.execute('''SELECT Moves.id, Moves.learn_date, Moves.move_name, Moves.move_difficulty, MoveTypes.move_type_name, Moves.link, Moves.notes, Moves.start_position, Moves.end_position  
 FROM Moves LEFT JOIN MoveTypes 
 ON MoveTypes.id = Moves.move_type_id 
 ORDER BY Moves.id DESC''')
@@ -52,6 +54,8 @@ def create():
         moveType = "NULL"
     link = requestData['link']
     notes = requestData['notes']
+    startPos = requestData['starting_position']
+    endPos = requestData['ending_position']
 
     # get the MoveTypes table ID form the move type name if it exists
     typeID = None
@@ -62,9 +66,9 @@ def create():
             typeID = dbRow[0]
 
     if typeID is not None:
-        cursor.execute(f"INSERT INTO Moves (learn_date, move_name, move_difficulty, move_type_id, link, notes) VALUES ('{date}', '{name}', {difficulty}, {typeID}, '{link}', '{notes}')")
+        cursor.execute(f"INSERT INTO Moves (learn_date, move_name, move_difficulty, move_type_id, link, notes, start_position, end_position) VALUES ('{date}', '{name}', {difficulty}, {typeID}, '{link}', '{notes}', '{startPos}', '{endPos}')")
     else:
-        cursor.execute(f"INSERT INTO Moves (learn_date, move_name, move_difficulty, link, notes) VALUES ('{date}', '{name}', {difficulty}, '{link}', '{notes}')")
+        cursor.execute(f"INSERT INTO Moves (learn_date, move_name, move_difficulty, link, notes, start_position, end_position) VALUES ('{date}', '{name}', {difficulty}, '{link}', '{notes}', '{startPos}', '{endPos}')")
 
     conn.commit()
 
@@ -87,7 +91,8 @@ def edit():
         moveType = "NULL"
     link = requestData['link']
     notes = requestData['notes']
-    print(link, " ", notes)
+    startPos = requestData['starting_position']
+    endPos = requestData['ending_position']
 
     # get the MoveTypes table ID form the move type name if it exists
     typeID = "NULL"
@@ -97,10 +102,20 @@ def edit():
         if dbRow is not None:
             typeID = dbRow[0]
 
-    cursor.execute(f"UPDATE Moves SET learn_date = '{date}', move_name = '{name}', move_difficulty = {difficulty}, move_type_id = {typeID}, link = '{link}', notes = '{notes}' WHERE id = {id}")
+    cursor.execute(f"UPDATE Moves SET learn_date = '{date}', move_name = '{name}', move_difficulty = {difficulty}, move_type_id = {typeID}, link = '{link}', notes = '{notes}', start_position = '{startPos}', end_position = '{endPos}' WHERE id = {id}")
     conn.commit()
 
     return {'201': 'Move edited successfully'}
+
+# delete a move in the database
+@app.route('/api/delete', methods=['POST'])
+def delete():
+    requestData = request.get_json() #gets body of request as dict
+    id = int(requestData['id'])
+
+    cursor.execute(f"DELETE FROM Moves WHERE id = {id}")
+    conn.commit()
+    return {'201': 'Move deleted successfully'}
 
 @app.route('/')
 def home():
@@ -163,8 +178,6 @@ def recommendSeq():
     moveBank = []
     while dbRow is not None:
         currMove = getDbRowDict(dbRow)
-        currMove["start position"] = dbRow[6]
-        currMove["end position"] = dbRow[7]
         
         moveBank += [currMove]
         dbRow = cursor.fetchone()
