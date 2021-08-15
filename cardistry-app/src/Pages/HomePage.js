@@ -24,6 +24,8 @@ export const HomePage = ()=> {
         "notes": 5
     };
 
+    var showEditModal = false
+
     // sets the current list of moves when this page renders
     useEffect(()=> {
         fetch('/api')
@@ -90,14 +92,16 @@ export const HomePage = ()=> {
             .then(data => console.log(data))
     }
 
-    const handleMoveEdit = (moveID) => {
-        //ReactDOM.render(<EditModal/>, document.getElementById('root'))
-        console.log(moveID)
-        //return ReactDOM.createPortal(<EditModal/>, document.getElementById("modal"));
+    //close the edit modal
+    const modalClose = () => {
+        showEditModal = false
+        ReactDOM.render(<EditModal showModal={showEditModal} onClose={modalClose}/>, document.getElementById('modal'))
     }
 
-    const modalClose = (e) => {
-        console.log("close")
+    //open the edit modal
+    const handleMoveEdit = (moveID) => {
+        showEditModal = true
+        ReactDOM.render(<EditModal showModal={showEditModal} onClose={modalClose}/>, document.getElementById('modal'))
     }
 
     return (
@@ -105,24 +109,7 @@ export const HomePage = ()=> {
             <TitleBar/>
             <Form inputMove={addedMove} onFormChange={handleFormChange} onFormSubmit={handleFormSubmit} fieldNums={fieldNums}/>
             <Table listOfMoves={currMoves} onMoveEdit={handleMoveEdit}/>
-            <EditModal show={true} handleClose={e => this.modalClose(e)}>
-                <h2>Hello Modal</h2>
-                <div className="form-group">
-                    <label>Enter Name:</label>
-                    <input
-                    type="text"
-                    value={"input name"}
-                    name="modalInputName"
-                    onChange={e => this.handleChange(e)}
-                    className="form-control"
-                    />
-                </div>
-                <div className="form-group">
-                    <button onClick={e => this.handleSubmit(e)} type="button">
-                    Save
-                    </button>
-                </div>
-            </EditModal>
+            <div id="modal"></div>
         </>
     )
 }
