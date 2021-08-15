@@ -144,7 +144,6 @@ def recommendSeq():
         nextMoveIndex = transition(transitionProbs)
         seq += [moveBank.pop(nextMoveIndex)]
 
-    print(seq)
     return jsonify(seq)
 
 if __name__ == '__main__':

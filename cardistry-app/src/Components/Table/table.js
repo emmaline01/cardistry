@@ -1,13 +1,14 @@
 import React from 'react';
 
-const handleClick = (id) => {
-    console.log("clicked!")
-    // TODO: show a modal popup that allows editing of row and save the edits to db
-}
-
 // displays a table of moves
 
-export const Table = ({listOfMoves})=> {
+export const Table = ({listOfMoves, onMoveEdit})=> {
+
+    const handleClick = (id) => {
+        // TODO: show a modal popup that allows editing of row and save the edits to db
+        onMoveEdit(id)
+    }
+
     return (
         <>
             <div className="container">

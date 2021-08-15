@@ -1,16 +1,19 @@
 // lots of credit to the tutorial https://www.youtube.com/watch?v=cb1vy1HpVwk
 
+import ReactDOM from 'react-dom';
+
 import React, {useState, useEffect} from 'react';
 import {Table} from '../Components/Table/table';
 import {Form} from '../Components/Form/form';
-import {TitleBar} from '../Components/TitleBar/titleBar'
+import {TitleBar} from '../Components/TitleBar/titleBar';
+import {EditModal} from '../Components/EditModal/editModal';
 
 // the home page of the web app
 export const HomePage = ()=> {
 
     // state info: current list of moves, move being added
-    const [currMoves, setMoves] = useState([])
-    const [addedMove, setAddMove] = useState(['', '', 'Difficulty', 'Type', '', ''])
+    const [currMoves, setMoves] = useState([]);
+    const [addedMove, setAddMove] = useState(['', '', 'Difficulty', 'Type', '', '']);
 
     const fieldNums = {
         "date": 0,
@@ -19,7 +22,7 @@ export const HomePage = ()=> {
         "type": 3,
         "link": 4,
         "notes": 5
-    }
+    };
 
     // sets the current list of moves when this page renders
     useEffect(()=> {
@@ -87,11 +90,39 @@ export const HomePage = ()=> {
             .then(data => console.log(data))
     }
 
+    const handleMoveEdit = (moveID) => {
+        //ReactDOM.render(<EditModal/>, document.getElementById('root'))
+        console.log(moveID)
+        //return ReactDOM.createPortal(<EditModal/>, document.getElementById("modal"));
+    }
+
+    const modalClose = (e) => {
+        console.log("close")
+    }
+
     return (
         <>
             <TitleBar/>
             <Form inputMove={addedMove} onFormChange={handleFormChange} onFormSubmit={handleFormSubmit} fieldNums={fieldNums}/>
-            <Table listOfMoves={currMoves}/>
+            <Table listOfMoves={currMoves} onMoveEdit={handleMoveEdit}/>
+            <EditModal show={true} handleClose={e => this.modalClose(e)}>
+                <h2>Hello Modal</h2>
+                <div className="form-group">
+                    <label>Enter Name:</label>
+                    <input
+                    type="text"
+                    value={"input name"}
+                    name="modalInputName"
+                    onChange={e => this.handleChange(e)}
+                    className="form-control"
+                    />
+                </div>
+                <div className="form-group">
+                    <button onClick={e => this.handleSubmit(e)} type="button">
+                    Save
+                    </button>
+                </div>
+            </EditModal>
         </>
     )
 }
