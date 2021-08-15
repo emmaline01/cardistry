@@ -8,7 +8,7 @@ import {Form} from '../Components/Form/form';
 import {TitleBar} from '../Components/TitleBar/titleBar';
 import {EditModal} from '../Components/EditModal/editModal';
 
-// the home page of the web app
+// the home page of the web app - displays all other components
 export const HomePage = ()=> {
 
     // state info
@@ -157,6 +157,7 @@ export const HomePage = ()=> {
         })
     }
 
+    // send request to delete selected move, updates current states
     const modalMoveDelete = () => {
         fetch('/api/delete', {
             method: 'POST',

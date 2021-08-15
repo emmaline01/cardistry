@@ -14,15 +14,18 @@ export const EditModal = ({editedMove, onClose, onFormChange, onFormSubmit, onMo
         onClose()
     }
 
+    // handle the form fields changing
     const handleChange = (field, event) => {
         onFormChange(field, event.target.value)
     }
 
+    // handle submitting the form
     const handleSubmit = (event) => {
         event.preventDefault()
         onFormSubmit()
     }
 
+    // handle deleting the selected move
     const handleDelete = (event) => {
         event.preventDefault()
         onMoveDelete()
