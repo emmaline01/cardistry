@@ -11,9 +11,11 @@ import {EditModal} from '../Components/EditModal/editModal';
 // the home page of the web app
 export const HomePage = ()=> {
 
-    // state info: current list of moves, move being added
+    // state info
     const [currMoves, setMoves] = useState([]);
     const [addedMove, setAddMove] = useState(['', '', 'Difficulty', 'Type', '', '']);
+    const [editedMove, setEditedMove] = useState(['', '', 'Difficulty', 'Type', '', '', -1]);
+    const [showEditModal, setShowEditModal] = useState(false);
 
     const fieldNums = {
         "date": 0,
@@ -21,10 +23,9 @@ export const HomePage = ()=> {
         "difficulty": 2,
         "type": 3,
         "link": 4,
-        "notes": 5
+        "notes": 5,
+        "id": 6
     };
-
-    var showEditModal = false
 
     // sets the current list of moves when this page renders
     useEffect(()=> {
@@ -34,9 +35,16 @@ export const HomePage = ()=> {
                     return response.json()
                 }
             })
-            .then(data => setMoves(data))
-            .then(data => console.log(data))
-    }, [])
+            .then(data => setMoves(data));
+        // referenced https://stackoverflow.com/questions/55600870/hooks-setstate-always-one-step-behind
+        ReactDOM.render(<EditModal 
+                editedMove={editedMove} 
+                showModal={showEditModal} 
+                onClose={modalClose} 
+                onFormChange={modalChange} 
+                onFormSubmit={modalSubmit}
+                fieldNums={fieldNums}/>, document.getElementById('modal'));
+    }, [editedMove, showEditModal])
 
     // updates the currently added move state
     const handleFormChange = (field, inputVal) => {
@@ -79,7 +87,6 @@ export const HomePage = ()=> {
                 }
             })
             .then(data => setMoves(data))
-            .then(data => console.log(data))
     }
 
     const recommendSeq = () => {
@@ -94,21 +101,60 @@ export const HomePage = ()=> {
 
     //close the edit modal
     const modalClose = () => {
-        showEditModal = false
-        ReactDOM.render(<EditModal showModal={showEditModal} onClose={modalClose}/>, document.getElementById('modal'))
+        setShowEditModal(false)
+    }
+
+    // updates the currently edited move state
+    const modalChange = (field, inputVal) => {
+        let newEditedMove = editedMove.slice(0, field)
+        newEditedMove.push(inputVal)
+        newEditedMove = newEditedMove.concat(editedMove.slice(field + 1))
+        setEditedMove(newEditedMove)
     }
 
     //open the edit modal
-    const handleMoveEdit = (moveID) => {
-        showEditModal = true
-        ReactDOM.render(<EditModal showModal={showEditModal} onClose={modalClose}/>, document.getElementById('modal'))
+    const handleMoveSelect = (move) => {
+        let diff = move.difficulty
+        if (diff === "") {
+            diff = "Difficulty"
+        }
+        let type = move.moveType
+        if (type === "") {
+            type = "Type"
+        }
+        setEditedMove([move.date, move.name, diff, type, move.link, move.notes, move.id])
+        setShowEditModal(true)
+    }
+
+    // send request to edit move in database, updates current states
+    const modalSubmit = () => {
+        fetch('/api/edit', {
+            method: 'POST',
+            body: JSON.stringify({
+                id:editedMove[fieldNums["id"]],
+                date:editedMove[fieldNums["date"]],
+                name:editedMove[fieldNums["name"]],
+                difficulty:editedMove[fieldNums["difficulty"]],
+                type:editedMove[fieldNums["type"]],
+                link:editedMove[fieldNums["link"]],
+                notes:editedMove[fieldNums["notes"]],
+            }),
+            headers: {
+                "Content-type": "application/json; charset=UTF-8"
+            }
+        }).then(response => response.json())
+        .then(msg => {
+            console.log(msg)
+            modalClose()
+            updateMoves()
+        })
     }
 
     return (
         <>
             <TitleBar/>
             <Form inputMove={addedMove} onFormChange={handleFormChange} onFormSubmit={handleFormSubmit} fieldNums={fieldNums}/>
-            <Table listOfMoves={currMoves} onMoveEdit={handleMoveEdit}/>
+            <Table listOfMoves={currMoves} onMoveEdit={handleMoveSelect}/>
             <div id="modal"></div>
         </>
     )

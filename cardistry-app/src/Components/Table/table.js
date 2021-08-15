@@ -4,9 +4,8 @@ import React from 'react';
 
 export const Table = ({listOfMoves, onMoveEdit})=> {
 
-    const handleClick = (id) => {
-        // TODO: show a modal popup that allows editing of row and save the edits to db
-        onMoveEdit(id)
+    const handleClick = (m) => {
+        onMoveEdit(m)
     }
 
     return (
@@ -28,7 +27,7 @@ export const Table = ({listOfMoves, onMoveEdit})=> {
                         <tbody>
                             {listOfMoves.map(move => {
                                 return (
-                                    <tr key={move.id} onClick={(e)=> handleClick(move.id)}>
+                                    <tr key={move.id} onClick={(e)=> handleClick(move)}>
                                         <td>{move.date}</td>
                                         <td>{move.name}</td>
                                         <td>{move.difficulty}</td>

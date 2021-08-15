@@ -12,14 +12,13 @@ def getDbRowDict(dbRow):
         return str(entry)
 
     currMove = dict()
-    print(dbRow, '\n\n')
     currMove["id"] = getDbEntry(dbRow[0])
     currMove["date"] = getDbEntry(dbRow[1])
     currMove["name"] = getDbEntry(dbRow[2])
     currMove["difficulty"] = getDbEntry(dbRow[3])
     currMove["moveType"] = getDbEntry(dbRow[4])
-    currMove["link"] = getDbEntry(dbRow[6])
-    currMove["notes"] = getDbEntry(dbRow[5])
+    currMove["link"] = getDbEntry(dbRow[5])
+    currMove["notes"] = getDbEntry(dbRow[6])
     return currMove
 
 # get the current list of moves and return them as JSON
@@ -44,19 +43,23 @@ def create():
     requestData = request.get_json() #gets body of request as dict
     date = requestData['date']
     name = requestData['name']
-    difficulty = int(requestData['difficulty'])
-    moveType = requestData['type']
+    if (requestData['difficulty'] == "Difficulty"): #if no difficulty was entered
+        difficulty = "NULL"
+    else:
+        difficulty = int(requestData['difficulty'])
+    moveType = "'" + requestData['type'] + "'"
+    if (moveType == "Type"): #if no type was entered
+        moveType = "NULL"
     link = requestData['link']
     notes = requestData['notes']
 
     # get the MoveTypes table ID form the move type name if it exists
-    cursor.execute(f"SELECT * FROM MoveTypes WHERE move_type_name = '{moveType}'")
-    dbRow = cursor.fetchone()
-    if dbRow is not None:
-        typeID = dbRow[0]
-    else:
-        typeID = None
-        print(f"{moveType} type not found")
+    typeID = None
+    if moveType != "NULL":
+        cursor.execute(f"SELECT * FROM MoveTypes WHERE move_type_name = {moveType}")
+        dbRow = cursor.fetchone()
+        if dbRow is not None:
+            typeID = dbRow[0]
 
     if typeID is not None:
         cursor.execute(f"INSERT INTO Moves (learn_date, move_name, move_difficulty, move_type_id, link, notes) VALUES ('{date}', '{name}', {difficulty}, {typeID}, '{link}', '{notes}')")
@@ -67,6 +70,37 @@ def create():
 
     return {'201': 'Move added successfully'}
 
+
+# edit a move in the database
+@app.route('/api/edit', methods=['POST'])
+def edit():
+    requestData = request.get_json() #gets body of request as dict
+    id = int(requestData['id'])
+    date = requestData['date']
+    name = requestData['name']
+    if (requestData['difficulty'] == "Difficulty"): #if no difficulty was entered
+        difficulty = "NULL"
+    else:
+        difficulty = int(requestData['difficulty'])
+    moveType = "'" + requestData['type'] + "'"
+    if (moveType == "Type"): #if no type was entered
+        moveType = "NULL"
+    link = requestData['link']
+    notes = requestData['notes']
+    print(link, " ", notes)
+
+    # get the MoveTypes table ID form the move type name if it exists
+    typeID = "NULL"
+    if moveType != "NULL":
+        cursor.execute(f"SELECT * FROM MoveTypes WHERE move_type_name = {moveType}")
+        dbRow = cursor.fetchone()
+        if dbRow is not None:
+            typeID = dbRow[0]
+
+    cursor.execute(f"UPDATE Moves SET learn_date = '{date}', move_name = '{name}', move_difficulty = {difficulty}, move_type_id = {typeID}, link = '{link}', notes = '{notes}' WHERE id = {id}")
+    conn.commit()
+
+    return {'201': 'Move edited successfully'}
 
 @app.route('/')
 def home():
