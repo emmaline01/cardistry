@@ -5,11 +5,11 @@ import ReactDOM from 'react-dom';
 import React, {useState, useEffect} from 'react';
 import {Table} from '../Components/Table/table';
 import {Form} from '../Components/Form/form';
-import {TitleBar} from '../Components/TitleBar/titleBar';
 import {EditModal} from '../Components/EditModal/editModal';
 
+
 // the home page of the web app - displays all other components
-export const HomePage = ()=> {
+export const HomePage = () => {
 
     // state info
     const [currMoves, setMoves] = useState([]);
@@ -177,10 +177,10 @@ export const HomePage = ()=> {
 
     return (
         <>
-            <TitleBar/>
             <Form inputMove={addedMove} onFormChange={handleFormChange} onFormSubmit={handleFormSubmit} fieldNums={fieldNums}/>
             <Table listOfMoves={currMoves} onMoveEdit={handleMoveSelect}/>
             <div id="modal"></div>
+            
         </>
     )
 }

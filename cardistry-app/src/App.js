@@ -1,12 +1,54 @@
 import React from 'react';
 import logo from './logo.svg';
 import './App.css';
-import {HomePage} from './Pages/HomePage'
+import {Container, Row} from "react-bootstrap";
+import {SideBar} from './Components/SideBar/sidebar.js';
+import {TitleBar} from './Components/TitleBar/titleBar';
+
+import {HomePage} from './Pages/HomePage';
+import {AboutPage} from './Pages/AboutPage';
+import {ComboPage} from './Pages/ComboPage';
+import {
+  BrowserRouter as Router,
+  Switch,
+  Route,
+  Link
+} from "react-router-dom";
 
 function App() {
   return (
     <div className="App">
-      <HomePage/>
+
+      <Container fluid>
+        <Row>
+            <div className="col-sm-2">
+                <div>
+                    <SideBar/>
+                </div>
+            </div>
+
+            <div className="col-sm-10">
+            <TitleBar/>
+            <Router>
+              <Switch>
+
+                <Route exact path='/'>
+                  <HomePage/>
+                </Route>
+
+                <Route path='/about'>
+                  <AboutPage/>
+                </Route>
+
+                <Route path='/combos'>
+                  <ComboPage/>
+                </Route>
+
+              </Switch>
+            </Router>
+            </div>
+        </Row>
+    </Container>
     </div>
   );
 }

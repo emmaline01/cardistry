@@ -1,0 +1,17 @@
+cardistry website brainstorm
+
+core functionality - tracks the moves i've learned and the tutorial links
+list of moves I want to learn still but haven't started?
+favorite moves list?
+sequences list?
+
+possible additional features - 
+add notes at specific points in the videos?
+suggestions for next moves to learn based on move type/teacher? (content-based recommendation system? since collaborative system isn't as easily possible)
+ - YouTube api to display video recommendations?
+helps me practice by setting goals and sending practice notifications? (somewhat easy except API for sending emails)
+suggests sequences of moves by chaining moves that fit together? (might need cv to see start/end positions?)
+ - parameter for how similar to previous/favorite sequences the new generated one should be?
+ - save favorited sequences?
+AR tutorials that tell me what I'm doing wrong in real time? (cv required...)
+chrome extension that lets me add a tutorial to the list while I'm watching the tut on youtube?

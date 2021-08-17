@@ -1,0 +1,13 @@
+/* credit to https://stackoverflow.com/questions/60482018/make-a-sidebar-from-react-bootstrap */
+
+.sidebar {
+    position: fixed;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    min-height: 100vh !important;
+    width: 15%;
+    z-index: 100;
+    padding: 48px 0 0;
+    box-shadow: inset -1px 0 0 rgba(0, 0, 0, .1);
+}
