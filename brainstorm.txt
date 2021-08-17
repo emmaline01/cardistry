@@ -9,9 +9,12 @@ possible additional features -
 add notes at specific points in the videos?
 suggestions for next moves to learn based on move type/teacher? (content-based recommendation system? since collaborative system isn't as easily possible)
  - YouTube api to display video recommendations?
+ ^ a feed that just shows the most recent tutorial videos from favorited channels/news from artists
 helps me practice by setting goals and sending practice notifications? (somewhat easy except API for sending emails)
 suggests sequences of moves by chaining moves that fit together? (might need cv to see start/end positions?)
  - parameter for how similar to previous/favorite sequences the new generated one should be?
  - save favorited sequences?
 AR tutorials that tell me what I'm doing wrong in real time? (cv required...)
-chrome extension that lets me add a tutorial to the list while I'm watching the tut on youtube?
+chrome extension that lets me add a tutorial to the list while I'm watching the tutorial on youtube
+"create my own move" page that records me performing a move I made and saves it with the other moves
+ - or just an option to record a video instead of/while also putting in a tutorial link just to show my progress?
