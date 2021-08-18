@@ -19,7 +19,7 @@ export const Form = ({inputMove, onFormChange, onFormSubmit, fieldNums})=> {
             <div className="container">
                 <form onSubmit={handleSubmit}>
                     <div className="row" style={{padding:"50px 0px 0px 0px"}}>
-                        <p>Add a new move</p>
+                        <h4 style={{padding:"0px 0px 20px 0px"}}>Add a new move:</h4>
                         <div className="col-sm-2">
                             <input type='date' placeholder="Date" required value={inputMove[fieldNums["date"]]} onChange={(e) => handleChange(fieldNums["date"], e)} className="form-control"></input>
                         </div>

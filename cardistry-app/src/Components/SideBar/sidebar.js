@@ -1,8 +1,7 @@
 // credit to https://stackoverflow.com/questions/60482018/make-a-sidebar-from-react-bootstrap
 
-import React from "@babel/template";
+import React from 'react';
 import {Nav} from "react-bootstrap";
-//import {withRouter} from "react-router";
 import "../SideBar/sidebar.css";
 
 export const SideBar = () => {

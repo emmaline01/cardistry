@@ -77,9 +77,8 @@ export const HomePage = () => {
         }).then(response => response.json())
         .then(msg => {
             console.log(msg)
-            setAddMove(['', '', 'Difficulty', 'Type', '', ''])
+            setAddMove(['', '', 'Difficulty', 'Type', '', '', '', ''])
             updateMoves()
-            recommendSeq()
         })
     }
 
@@ -92,16 +91,6 @@ export const HomePage = () => {
                 }
             })
             .then(data => setMoves(data))
-    }
-
-    const recommendSeq = () => {
-        fetch('/api/recommendSeq')
-            .then(response => {
-                if (response.ok) {
-                    return response.json()
-                }
-            })
-            .then(data => console.log(data))
     }
 
     //close the edit modal
@@ -178,6 +167,7 @@ export const HomePage = () => {
     return (
         <>
             <Form inputMove={addedMove} onFormChange={handleFormChange} onFormSubmit={handleFormSubmit} fieldNums={fieldNums}/>
+            <h4 style={{padding:"0px 0px 20px 0px"}}>Known moves: (click to edit)</h4>
             <Table listOfMoves={currMoves} onMoveEdit={handleMoveSelect}/>
             <div id="modal"></div>
             

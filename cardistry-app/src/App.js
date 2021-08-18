@@ -1,5 +1,5 @@
 import React from 'react';
-import logo from './logo.svg';
+//import logo from './logo.svg';
 import './App.css';
 import {Container, Row} from "react-bootstrap";
 import {SideBar} from './Components/SideBar/sidebar.js';
@@ -11,8 +11,7 @@ import {ComboPage} from './Pages/ComboPage';
 import {
   BrowserRouter as Router,
   Switch,
-  Route,
-  Link
+  Route
 } from "react-router-dom";
 
 function App() {

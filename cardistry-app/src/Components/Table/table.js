@@ -12,7 +12,6 @@ export const Table = ({listOfMoves, onMoveEdit})=> {
         <>
             <div className="container">
                 <div className="row">
-                    <p>Click any row to edit</p>
                     <table className="table table-bordered table-striped table-hover">
                         <thead style={{backgroundColor:"#6c757d", color:"white"}}>
                             <tr>

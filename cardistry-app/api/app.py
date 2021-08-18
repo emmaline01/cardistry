@@ -122,11 +122,13 @@ def home():
     return "<h1>hello</h1>"
 
 # uses a Markov chain to generate a sequence of moves
-@app.route('/api/recommendSeq', methods=['GET'])
-def recommendSeq():
-    # TODO: change to parameters
-    seqLength = 5
-    seqDifficulty = 3
+@app.route('/api/createRecommendedSeq', methods=['POST'])
+def createRecommendedSeq():
+    requestData = request.get_json()
+    seqDifficulty = int(requestData['target_difficulty'])
+    seqLength = int(requestData['target_length'])
+    difficultyVariation = int(requestData['difficulty_variation'])
+    transitionSmoothness = int(requestData['transition_smoothness'])
 
     # all moves have equal chance of being first TODO: handle target difficulty
     cursor.execute("SELECT * FROM Moves") # TODO: where move type is not magic
@@ -138,7 +140,11 @@ def recommendSeq():
         moveBank += [currMove]
         dbRow = cursor.fetchone()
 
-    return jsonify(markovRec.createRecommendSeq(seqLength, seqDifficulty, moveBank))
+    return jsonify(markovRec.createRecommendSeq(seqLength, seqDifficulty, difficultyVariation, transitionSmoothness, moveBank))
+
+@app.route('/api/getRecommendedSeq', methods=['GET'])
+def getRecommendedSeq():
+    return jsonify(markovRec.recommendedSeq)
 
 if __name__ == '__main__':
 
