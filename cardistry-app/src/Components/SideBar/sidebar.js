@@ -12,6 +12,9 @@ export const SideBar = () => {
                 <Nav.Link href="/">Home</Nav.Link>
             </Nav.Item>
             <Nav.Item>
+                <Nav.Link href="/recommendations" eventKey="/recommendations">Recommendations</Nav.Link>
+            </Nav.Item>
+            <Nav.Item>
                 <Nav.Link href="/combos" eventKey="/combos">Combos</Nav.Link>
             </Nav.Item>
             <Nav.Item>

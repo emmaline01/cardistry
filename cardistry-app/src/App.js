@@ -8,6 +8,7 @@ import {TitleBar} from './Components/TitleBar/titleBar';
 import {HomePage} from './Pages/HomePage';
 import {AboutPage} from './Pages/AboutPage';
 import {ComboPage} from './Pages/ComboPage';
+import {RecsPage} from './Pages/RecsPage';
 import {
   BrowserRouter as Router,
   Switch,
@@ -27,24 +28,29 @@ function App() {
             </div>
 
             <div className="col-sm-10">
-            <TitleBar/>
-            <Router>
-              <Switch>
+              <TitleBar/>
+              
+              <Router>
+                <Switch>
 
-                <Route exact path='/'>
-                  <HomePage/>
-                </Route>
+                  <Route exact path='/'>
+                    <HomePage/>
+                  </Route>
 
-                <Route path='/about'>
-                  <AboutPage/>
-                </Route>
+                  <Route path='/about'>
+                    <AboutPage/>
+                  </Route>
 
-                <Route path='/combos'>
-                  <ComboPage/>
-                </Route>
+                  <Route path='/combos'>
+                    <ComboPage/>
+                  </Route>
 
-              </Switch>
-            </Router>
+                  <Route path='/recommendations'>
+                    <RecsPage/>
+                  </Route>
+
+                </Switch>
+              </Router>
             </div>
         </Row>
     </Container>
