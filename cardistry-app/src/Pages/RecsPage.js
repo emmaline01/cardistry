@@ -1,4 +1,5 @@
-import React, {useState, useEffect} from 'react';
+import React from 'react';
+import {GOOGLE_API_KEY} from './APIkey';
 
 export class RecsPage extends React.Component {
 
@@ -12,11 +13,11 @@ export class RecsPage extends React.Component {
     // initialize JS client library and make API request
     initGapi() {
         this.makeAPICall = () => {
-            window.gapi.client.setApiKey('apiKey');
+            window.gapi.client.setApiKey(GOOGLE_API_KEY);
             let promise = window.gapi.client.request({
                 'path': 'https://www.googleapis.com/youtube/v3/search',
                 'method': 'GET',
-                'params': {'part':'snippet', 'q':'the weeknd'}
+                'params': {'part':'snippet', 'q':'cardistry'}
             });
             promise.execute((jsonResp, rawResp) => console.log(jsonResp))
         }
