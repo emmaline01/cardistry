@@ -6,7 +6,8 @@ export class RecsPage extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            alreadyLoaded: false
+            alreadyLoaded: false,
+            recs: {}
         };
     }
     
@@ -17,9 +18,15 @@ export class RecsPage extends React.Component {
             let promise = window.gapi.client.request({
                 'path': 'https://www.googleapis.com/youtube/v3/search',
                 'method': 'GET',
-                'params': {'part':'snippet', 'q':'cardistry'}
+                'params': {'part':'snippet', 'q':'bruno mars', 'type':'video'}
             });
-            promise.execute((jsonResp, rawResp) => console.log(jsonResp))
+            promise.execute((jsonResp, _) => {
+                console.log(jsonResp);
+                this.setState({
+                    alreadyLoaded: this.state.alreadyLoaded,
+                    recs: jsonResp
+                });
+            })
         }
 
         if (!this.state.alreadyLoaded) {
@@ -27,7 +34,8 @@ export class RecsPage extends React.Component {
                 this.makeAPICall();
             });
             this.setState({
-                alreadyLoaded: true
+                alreadyLoaded: true,
+                recs: this.state.recs
             });
         }
         else {
@@ -51,11 +59,34 @@ export class RecsPage extends React.Component {
     }
 
     render() {
+        if (Object.keys(this.state.recs).length !== 0) {
+            //display the first video result
+            let vid1Link = "https://www.youtube.com/embed/" + this.state.recs.items[0].id.videoId;
+            console.log(vid1Link);
 
+            return (
+                <>
+                <iframe width="560" 
+                    height="315" 
+                    src={vid1Link}
+                    title="YouTube video player" 
+                    frameBorder="0" 
+                    allow="accelerometer; 
+                        autoplay; 
+                        clipboard-write; 
+                        encrypted-media; 
+                        gyroscope; 
+                        picture-in-picture" 
+                    allowFullScreen></iframe>
+                </>
+            )
+        }
         return (
             <>
-            <p>greet</p>
+                <p>greet</p>
             </>
         )
+
+        
     }
 }

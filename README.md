@@ -10,4 +10,4 @@ Start the frontend by going into the cardistry-app directory and running "yarn s
 
 ## Technologies used
 
-React + React-Bootstrap UI library (JavaScript) for the frontend, Flask (Python) for the backend, Microsoft Azure for SQL database hosting
+React (JavaScript) for the frontend, Flask (Python) for the backend, Microsoft Azure for SQL database hosting
