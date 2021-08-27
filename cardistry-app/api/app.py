@@ -142,9 +142,20 @@ def createRecommendedSeq():
 
     return jsonify(markovRec.createRecommendSeq(seqLength, seqDifficulty, difficultyVariation, transitionSmoothness, moveBank))
 
+# return a sequence already created through the Markov chain
 @app.route('/api/getRecommendedSeq', methods=['GET'])
 def getRecommendedSeq():
     return jsonify(markovRec.recommendedSeq)
+
+# get the list of keywords used to look for recommended tutorials on YouTube
+def getRecommendedMoves():
+    # feature-based recommendation system
+    # features: hard, intermediate, easy, 2-handed cutes, 1-handed cuts, ....
+    # to get the rankings of each feature, total the number of moves already learned with each feature
+    # return the recommended difficulty and type?
+    return 0
+
+
 
 if __name__ == '__main__':
 
