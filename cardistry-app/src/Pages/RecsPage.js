@@ -8,13 +8,56 @@ export class RecsPage extends React.Component {
         super(props);
         this.state = {
             alreadyLoaded: false,
-            recs: {}
+            recs: {},
+            moves: [],
+            error: 0
+        };
+        this.diffRec = "";
+        this.typeRec = "";
+
+
+        // CONSTANTS
+
+        this.index2Type = {
+            0: "2-handed cut",
+            1: "1-handed cut",
+            2: "1-card move",
+            3: "display",
+            4: "aerial",
+            5: "shuffle",
+            6: "isolation",
+            7: "fan spread",
+            8: "",
+            9: "magic"
+        };
+        this.type2Index = {
+            "2-handed cuts": 0,
+            "1-handed cuts": 1,
+            "1-card moves": 2,
+            "displays": 3,
+            "aerials": 4,
+            "shuffles": 5,
+            "isolations": 6,
+            "fans/spreads": 7,
+            "misc": 8,
+            "magic": 9
+        }
+
+        this.index2Difficulty = {
+            0: "easy",
+            1: "easy intermediate",
+            2: "intermediate",
+            3: "intermediate hard",
+            4: "hard"
         };
     }
     
     // initialize JS client library and make API request
     initGapi() {
+
+        // helper function that actually makes the API call
         this.makeAPICall = () => {
+            // create the API request
             window.gapi.client.setApiKey(GOOGLE_API_KEY);
             let apiReq = {
                 'path': 'https://www.googleapis.com/youtube/v3/search',
@@ -32,13 +75,34 @@ export class RecsPage extends React.Component {
             }
             let promise = window.gapi.client.request(apiReq);
 
-            promise.execute((jsonResp, _) => {
-                console.log(jsonResp);
-                this.setState({
-                    alreadyLoaded: this.state.alreadyLoaded,
-                    recs: jsonResp
-                });
-            }) // TODO: add error checking
+            // execute the API request
+            promise.execute((jsonResp, rawResp) => {
+                if (jsonResp) {
+                    console.log(jsonResp);
+                    
+                    //error checking
+                    if (jsonResp.hasOwnProperty('error')) {
+                        this.setState({
+                            alreadyLoaded: this.state.alreadyLoaded,
+                            recs: this.state.recs,
+                            moves: this.state.moves,
+                            error: 1
+                        });
+                    }
+                    // if no errors, set recommendations state
+                    else {
+                        this.setState({
+                            alreadyLoaded: this.state.alreadyLoaded,
+                            recs: jsonResp,
+                            moves: this.state.moves,
+                            error: this.state.error
+                        });
+                    }
+                }
+                else {
+                    console.log(rawResp);
+                }
+            })
         }
 
         // load the gapi if not already loaded, then make API call
@@ -48,7 +112,9 @@ export class RecsPage extends React.Component {
             });
             this.setState({
                 alreadyLoaded: true,
-                recs: this.state.recs
+                recs: this.state.recs,
+                moves: this.state.moves,
+                error: this.state.error
             });
         }
         else {
@@ -58,6 +124,7 @@ export class RecsPage extends React.Component {
     }
 
     // https://stackoverflow.com/questions/44213061/cannot-read-property-load-of-undefined
+    // load the Google API 
     loadGapiAndAfterwardsInitAuth() {
         const script = document.createElement("script");
         script.src = "https://apis.google.com/js/api.js";
@@ -65,14 +132,83 @@ export class RecsPage extends React.Component {
         script.defer = true;
         script.onload = this.initGapi.bind(this);
         document.head.appendChild(script);
+
+        console.log("loading gapi");
     }
 
+    // load the current list of movese already learned
+    loadKnownMoves() {
+        fetch('/api')
+            .then(response => {
+                if (response.ok) {
+                    return response.json()
+                }
+            })
+            .then(data => this.setState({
+                alreadyLoaded: this.state.alreadyLoaded,
+                recs: this.state.recs,
+                moves: data,
+                error: this.state.error
+            }));
+    }
+
+    componentDidUpdate() {
+        console.log("updating!")
+
+        // set recommended difficulty and type if not already set and moves have been loaded
+        if (this.diffRec.length === 0 && this.typeRec.length === 0 && this.state.moves.length !== 0 ) {
+            let difficultyArr = [0, 0, 0, 0, 0];
+            let typeArr = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
+            // 2-handed cuts, 1-handed cuts, 1-card moves, displays, aerials, shuffles, isolations, fans/spreads, misc, magic
+            
+            // count the occurrences of each type/difficulty in the known moves list
+            for (let i = 0; i < this.state.moves.length; i++) {
+                //update difficulty if valid
+                let diffInt = parseInt(this.state.moves[i].difficulty);
+                if (!isNaN(diffInt)) {
+                    difficultyArr[diffInt - 1]++;
+                }
+                //update type if valid
+                if (this.type2Index.hasOwnProperty(this.state.moves[i].moveType)) {
+                    let typeIndex = this.type2Index[this.state.moves[i].moveType];
+                    if (typeIndex >= 0) {
+                        typeArr[typeIndex]++;
+                    }
+                }
+            }
+
+            // find the type/difficulty with most moves learned
+            this.diffRec = "";
+            let currMax = -1;
+            for (let i = 0; i < difficultyArr.length; i++) {
+                if (difficultyArr[i] > currMax) {
+                    currMax = difficultyArr[i];
+                    this.diffRec = this.index2Difficulty[i];
+                }
+            }
+            this.typeRec = "";
+            currMax = -1;
+            for (let i = 0; i < typeArr.length; i++) {
+                if (typeArr[i] > currMax) {
+                    currMax = typeArr[i];
+                    this.typeRec = this.index2Type[i];
+                }
+            }
+
+            this.loadGapiAndAfterwardsInitAuth(); // TODO: continue testing this placement
+        }
+    }
+
+    // when this component loads, load the known moves and Google API
     componentDidMount() {
-        this.loadGapiAndAfterwardsInitAuth();
+        this.loadKnownMoves();
     }
 
     render() {
-        if (Object.keys(this.state.recs).length !== 0) {
+        if (this.state.error === 1) {
+            return <p>error - check console logs</p>
+        }
+        else if (Object.keys(this.state.recs).length !== 0) {
 
             //display the video results
             let vid1Link = "https://www.youtube.com/embed/" + this.state.recs.items[0].id.videoId;
