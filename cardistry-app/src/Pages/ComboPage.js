@@ -2,6 +2,11 @@ import React, {useState, useEffect} from 'react';
 import {Table} from '../Components/Table/table';
 import {ComboForm} from '../Components/ComboForm/comboForm';
 
+/* Allows the user to generate combos of moves using a Markov Chain and the 
+ * parameters target difficulty, combo length, difficulty variation of moves
+ * in the combo, and the smoothness of transitions between moves. Markov
+ * Chain is implemented in the backend.
+ */
 export const ComboPage = () => {
 
     const [currRec, setCurrRec] = useState([])
@@ -14,6 +19,7 @@ export const ComboPage = () => {
         "transition smoothness": 3
     }
 
+    // get the current recommended sequence
     useEffect(() => {
         fetch('/api/getRecommendedSeq')
             .then(response => {
@@ -29,6 +35,7 @@ export const ComboPage = () => {
         console.log("selected " + move.id)
     }
 
+    // modifies state when the combo parameters are changed
     const handleComboFormChange = (field, inputVal) => {
         let newInput = currFormInput.slice(0, field)
         newInput.push(inputVal)
@@ -37,6 +44,7 @@ export const ComboPage = () => {
         console.log(currFormInput)
     }
 
+    // makes a call to the backend to generate a new combo with input parameters
     const handleComboGenerate = () => {
         fetch('/api/createRecommendedSeq', {
             method: 'POST',

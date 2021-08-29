@@ -1,5 +1,11 @@
 import random
 
+'''
+Markov class to track the current combo being recommended, and with
+functionality to generate a new recommended combo given the parameters
+target combo difficulty, number of moves in the combo, the variation of 
+difficulty of moves, and the smoothness of transitions between moves.
+'''
 class Markov(object):
 
     def __init__ (self):

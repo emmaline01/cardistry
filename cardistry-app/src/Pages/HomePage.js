@@ -8,7 +8,9 @@ import {Form} from '../Components/Form/form';
 import {EditModal} from '../Components/EditModal/editModal';
 
 
-// the home page of the web app - displays all other components
+/* the home page of the web app - displays table of moves already learned,
+ * allows editing of these moves already learned, and allows adding of new moves
+*/
 export const HomePage = () => {
 
     // state info

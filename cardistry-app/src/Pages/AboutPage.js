@@ -1,5 +1,7 @@
 import React from 'react';
 
+/* displays information about the web app
+ */
 export const AboutPage = () => {
     return (
         <>
@@ -8,9 +10,13 @@ export const AboutPage = () => {
             This was created by Emmaline as a personal project in the summer of 2021. 
             I originally just wanted to use some SQL queries on something more legitimate
             than homework assignments, then decided to learn Javascript/React along the way.
-            I also decided to add in a Markov chain to generate cardistry combo ideas
-            so that I could apply this other concept otherwise only learned in classes.
-            Let me know if you have any feedback on this or if there's any specific functionality
+            I also decided to add in a Markov chain to generate cardistry combo ideas and to 
+            use the YouTube Data API with search terms generated from the list of 
+            known cardistry moves to make more recommendations for other similar
+            moves to learn, so that this dashboard could also be used while or before 
+            learning new cardistry moves instead of just for after-the-fact cardistry move
+            documentation purposes.
+            Let me know if you have any feedback on this or if there's any specific website functionality
             that you think would be cool to see! 
         </p>
         <p>

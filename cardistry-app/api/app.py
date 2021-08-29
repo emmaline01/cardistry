@@ -29,7 +29,7 @@ def index():
     cursor.execute('''SELECT Moves.id, Moves.learn_date, Moves.move_name, Moves.move_difficulty, MoveTypes.move_type_name, Moves.link, Moves.notes, Moves.start_position, Moves.end_position  
 FROM Moves LEFT JOIN MoveTypes 
 ON MoveTypes.id = Moves.move_type_id 
-ORDER BY Moves.id DESC''')
+ORDER BY Moves.learn_date DESC''')
 
     dbRow = cursor.fetchone()
     databaseData = []
@@ -65,6 +65,8 @@ def create():
         if dbRow is not None:
             typeID = dbRow[0]
 
+    print(f"INSERT INTO Moves (learn_date, move_name, move_difficulty, move_type_id, link, notes, start_position, end_position) VALUES ('{date}', '{name}', {difficulty}, {typeID}, '{link}', '{notes}', '{startPos}', '{endPos}')")
+    print()
     if typeID is not None:
         cursor.execute(f"INSERT INTO Moves (learn_date, move_name, move_difficulty, move_type_id, link, notes, start_position, end_position) VALUES ('{date}', '{name}', {difficulty}, {typeID}, '{link}', '{notes}', '{startPos}', '{endPos}')")
     else:
@@ -130,6 +132,7 @@ def createRecommendedSeq():
     difficultyVariation = int(requestData['difficulty_variation'])
     transitionSmoothness = int(requestData['transition_smoothness'])
 
+    # TODO: fix so table shows up correctly
     # all moves have equal chance of being first TODO: handle target difficulty
     cursor.execute("SELECT * FROM Moves") # TODO: where move type is not magic
     dbRow = cursor.fetchone()
@@ -146,16 +149,6 @@ def createRecommendedSeq():
 @app.route('/api/getRecommendedSeq', methods=['GET'])
 def getRecommendedSeq():
     return jsonify(markovRec.recommendedSeq)
-
-# get the list of keywords used to look for recommended tutorials on YouTube
-def getRecommendedMoves():
-    # feature-based recommendation system
-    # features: hard, intermediate, easy, 2-handed cutes, 1-handed cuts, ....
-    # to get the rankings of each feature, total the number of moves already learned with each feature
-    # return the recommended difficulty and type?
-    return 0
-
-
 
 if __name__ == '__main__':
 

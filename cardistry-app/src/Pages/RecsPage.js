@@ -2,6 +2,12 @@ import React from 'react';
 import {GOOGLE_API_KEY} from './APIkey';
 import Button from 'react-bootstrap/Button';
 
+/* uses the YouTube Data API v3 and statistics from the list of known cardistry
+ * moves to display tutorial videos for cardistry moves of similar type and
+ * difficulty to moves already learned
+ * 
+ * uses this Google API client https://github.com/google/google-api-javascript-client
+*/
 export class RecsPage extends React.Component {
 
     constructor(props) {
@@ -55,7 +61,7 @@ export class RecsPage extends React.Component {
     // initialize JS client library and make API request
     initGapi() {
 
-        // helper function that actually makes the API call
+        // helper function that makes the API call
         this.makeAPICall = () => {
             // create the API request
             window.gapi.client.setApiKey(GOOGLE_API_KEY);
@@ -64,12 +70,13 @@ export class RecsPage extends React.Component {
                 'method': 'GET',
                 'params': {
                     'part':'snippet', 
-                    'q':'bruno mars', 
+                    'q': 'cardistry tutorial ' + this.diffRec + ' ' + this.typeRec, 
                     'type':'video',
                     'videoEmbeddable': 'true',
                     'maxResults': 3
                 }
             }
+            // if we've already loaded some recommendations, load the next page of search results
             if (Object.keys(this.state.recs).length !== 0) {
                 apiReq.params.pageToken = this.state.recs.nextPageToken
             }
@@ -132,8 +139,6 @@ export class RecsPage extends React.Component {
         script.defer = true;
         script.onload = this.initGapi.bind(this);
         document.head.appendChild(script);
-
-        console.log("loading gapi");
     }
 
     // load the current list of movese already learned
@@ -153,8 +158,6 @@ export class RecsPage extends React.Component {
     }
 
     componentDidUpdate() {
-        console.log("updating!")
-
         // set recommended difficulty and type if not already set and moves have been loaded
         if (this.diffRec.length === 0 && this.typeRec.length === 0 && this.state.moves.length !== 0 ) {
             let difficultyArr = [0, 0, 0, 0, 0];
@@ -178,7 +181,7 @@ export class RecsPage extends React.Component {
             }
 
             // find the type/difficulty with most moves learned
-            this.diffRec = "";
+            this.diffRec = " ";
             let currMax = -1;
             for (let i = 0; i < difficultyArr.length; i++) {
                 if (difficultyArr[i] > currMax) {
@@ -186,7 +189,7 @@ export class RecsPage extends React.Component {
                     this.diffRec = this.index2Difficulty[i];
                 }
             }
-            this.typeRec = "";
+            this.typeRec = " ";
             currMax = -1;
             for (let i = 0; i < typeArr.length; i++) {
                 if (typeArr[i] > currMax) {
@@ -195,7 +198,8 @@ export class RecsPage extends React.Component {
                 }
             }
 
-            this.loadGapiAndAfterwardsInitAuth(); // TODO: continue testing this placement
+            // after getting the YouTube query parameters, prepare and use the API
+            this.loadGapiAndAfterwardsInitAuth(); 
         }
     }
 

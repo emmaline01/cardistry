@@ -25,13 +25,17 @@ export const Table = ({listOfMoves, onMoveEdit})=> {
                         </thead>
                         <tbody>
                             {listOfMoves.map(move => {
+                                let linkText = "link";
+                                if (move.link.length == 0) {
+                                    linkText = ""
+                                }
                                 return (
                                     <tr key={move.id} onClick={(e)=> handleClick(move)}>
                                         <td>{move.date}</td>
                                         <td>{move.name}</td>
                                         <td>{move.difficulty}</td>
                                         <td>{move.moveType}</td>
-                                        <td>{move.link}</td>
+                                        <td><div style={{width:"25px", height: "30px", overflow:"hidden"}}><a href={move.link}>{linkText}</a></div></td>
                                         <td>{move.notes}</td>
                                     </tr>
                                 )

@@ -74,6 +74,7 @@ export const Form = ({inputMove, onFormChange, onFormSubmit, fieldNums})=> {
                     </div>
                     <div className="row" style={{padding:"10px 0px 50px 0px"}}>
                         <div className="col">
+                            {/* no apostrophes allowed */}
                             <input type='text' placeholder="Notes" value={inputMove[fieldNums["notes"]]} onChange={(e) => handleChange(fieldNums["notes"], e)} className="form-control"></input>
                         </div>
                         <div className="col-sm-2">
