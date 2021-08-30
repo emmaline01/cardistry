@@ -27,8 +27,8 @@ class Markov(object):
             # try to have scores match difficulty target
             if (len(move["difficulty"]) > 0):
                 score += difficultyMatchWeight * (5 - abs(int(move["difficulty"]) - seqDifficulty))
-            # punish shuffles
-            if move["moveType"] == "6": # shuffles id
+            # punish shuffles and magic
+            if move["moveType"] == "shuffles" or move["moveType"] == "magic":
                 score = 0.4 * score
             # punish moves of the same type
             if move["moveType"] == currentMove["moveType"]:

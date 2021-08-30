@@ -26,7 +26,7 @@ export const Table = ({listOfMoves, onMoveEdit})=> {
                         <tbody>
                             {listOfMoves.map(move => {
                                 let linkText = "link";
-                                if (move.link.length == 0) {
+                                if (move.link.length === 0) {
                                     linkText = ""
                                 }
                                 return (

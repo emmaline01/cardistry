@@ -23,9 +23,7 @@ def getDbRowDict(dbRow):
     currMove["ending_position"] = getDbEntry(dbRow[8])
     return currMove
 
-# get the current list of moves and return them as JSON
-@app.route('/api', methods=['GET'])
-def index():
+def requestAllMoves():
     cursor.execute('''SELECT Moves.id, Moves.learn_date, Moves.move_name, Moves.move_difficulty, MoveTypes.move_type_name, Moves.link, Moves.notes, Moves.start_position, Moves.end_position  
 FROM Moves LEFT JOIN MoveTypes 
 ON MoveTypes.id = Moves.move_type_id 
@@ -37,7 +35,12 @@ ORDER BY Moves.learn_date DESC''')
         databaseData += [getDbRowDict(dbRow)]
         dbRow = cursor.fetchone()
     # you can jsonify a list or a dict
-    return jsonify(databaseData)
+    return databaseData
+
+# get the current list of moves and return them as JSON
+@app.route('/api', methods=['GET'])
+def index():
+    return jsonify(requestAllMoves())
 
 # insert a new move into the database
 @app.route('/api/create', methods=['POST'])
@@ -132,16 +135,8 @@ def createRecommendedSeq():
     difficultyVariation = int(requestData['difficulty_variation'])
     transitionSmoothness = int(requestData['transition_smoothness'])
 
-    # TODO: fix so table shows up correctly
-    # all moves have equal chance of being first TODO: handle target difficulty
-    cursor.execute("SELECT * FROM Moves") # TODO: where move type is not magic
-    dbRow = cursor.fetchone()
-    moveBank = []
-    while dbRow is not None:
-        currMove = getDbRowDict(dbRow)
-        
-        moveBank += [currMove]
-        dbRow = cursor.fetchone()
+    #TODO: handle target difficulty
+    moveBank = requestAllMoves()
 
     return jsonify(markovRec.createRecommendSeq(seqLength, seqDifficulty, difficultyVariation, transitionSmoothness, moveBank))
 
